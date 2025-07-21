@@ -45,7 +45,7 @@ Rails.application.routes.draw do
   end
   
   # Scope all routes under locale (except admin)
-  scope "/:locale" do
+  scope "/:locale", locale: /#{I18n.available_locales.join("|")}/ do
 EOL
 
 # Extract existing routes properly
@@ -101,10 +101,6 @@ echo "📝 Original routes backed up to: $BACKUP_FILE"
 echo "🔄 To revert: cp $BACKUP_FILE config/routes.rb"
 echo ""
 
-# Now update default_url_options since routes are scoped
-sed -i '' 's/{ host: ENV\["DOMAIN"\] || "localhost:3000" }/{ host: ENV\["DOMAIN"\] || "localhost:3000", locale: I18n.locale }/' "$APP_CONTROLLER"
-echo "✅ Updated default_url_options for scoped routes"
-
 # 5. Add render to layout if not present (fixed position)
 LAYOUT="app/views/layouts/application.html.erb"
 RENDER_LINE='<%= render "components/language_switcher" %>'
@@ -149,16 +145,16 @@ fi
 
 # 7. Add locale logic to ApplicationController if not present
 if ! grep -qF "before_action :set_locale" "$APP_CONTROLLER"; then
-  # Remove the existing set_locale method if it exists
-  sed -i '' '/def set_locale/,/^  end$/d' "$APP_CONTROLLER"
+  # Create a backup
+  cp "$APP_CONTROLLER" "$APP_CONTROLLER.backup"
   
-  # Add the proper locale logic
+  # Add before_action :set_locale after authenticate_user!
   sed -i '' '/before_action :authenticate_user!/a\
   before_action :set_locale\
 ' "$APP_CONTROLLER"
 
-  # Add the locale methods before the default_url_options method
-  sed -i '' '/def default_url_options/a\
+  # Add private methods before the final 'end'
+  sed -i '' '/^end$/i\
   private\
 \
   def set_locale\
@@ -166,12 +162,39 @@ if ! grep -qF "before_action :set_locale" "$APP_CONTROLLER"; then
   end\
 \
   def extract_locale\
-    parsed_locale = params[:locale] || session[:locale] || request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first\
-    parsed_locale if I18n.available_locales.map(&:to_s).include?(parsed_locale)\
+    # Get locale from URL params first\
+    locale = params[:locale]\
+    return locale.to_sym if locale && I18n.available_locales.map(&:to_s).include?(locale.to_s)\
+    \
+    # Fall back to session\
+    locale = session[:locale]\
+    return locale.to_sym if locale && I18n.available_locales.map(&:to_s).include?(locale.to_s)\
+    \
+    # Fall back to Accept-Language header\
+    locale = request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first\
+    return locale.to_sym if locale && I18n.available_locales.map(&:to_s).include?(locale)\
+    \
+    # Default to nil, which will use I18n.default_locale\
+    nil\
   end\
 ' "$APP_CONTROLLER"
 
+  # Update default_url_options to include locale if it exists
+  if grep -qF "def default_url_options" "$APP_CONTROLLER"; then
+    sed -i '' 's/{ host: ENV\["DOMAIN"\] || "localhost:3000" }/{ host: ENV["DOMAIN"] || "localhost:3000", locale: I18n.locale }/' "$APP_CONTROLLER"
+  else
+    # Add default_url_options method before the private section
+    sed -i '' '/private/i\
+  def default_url_options\
+    { host: ENV["DOMAIN"] || "localhost:3000", locale: I18n.locale }\
+  end\
+' "$APP_CONTROLLER"
+  fi
+
   echo "✅ Added locale logic to ApplicationController"
+  echo "📝 Original ApplicationController backed up to: $APP_CONTROLLER.backup"
+else
+  echo "ℹ️  Locale logic already present in ApplicationController"
 fi
 
 echo "🎉 I18n setup complete! You can now use multiple languages in your app."

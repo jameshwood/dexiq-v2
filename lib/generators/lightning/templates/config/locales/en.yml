@@ -1,0 +1,40 @@
+en:
+  languages:
+    en: "English"
+    es: "Spanish"
+    fr: "French"
+    de: "German"
+  
+  common:
+    save: "Save"
+    cancel: "Cancel"
+    edit: "Edit"
+    delete: "Delete"
+    back: "Back"
+    next: "Next"
+    previous: "Previous"
+  
+  navigation:
+    home: "Home"
+    about: "About"
+    contact: "Contact"
+    login: "Login"
+    logout: "Logout"
+    register: "Register"
+  
+  pages:
+    home:
+      title: "Welcome"
+      subtitle: "Get started with your new Rails app"
+    about:
+      title: "About Us"
+      content: "Learn more about our company"
+    contact:
+      title: "Contact Us"
+      content: "Get in touch with our team"
+  
+  users:
+    premium: "Premium User"
+    admin: "Administrator"
+    profile: "Profile"
+    settings: "Settings" 

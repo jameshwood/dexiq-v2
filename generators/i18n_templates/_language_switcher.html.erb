@@ -8,7 +8,7 @@
     <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-2xl bg-base-100 rounded-box w-52 border border-base-300 mb-2">
       <% I18n.available_locales.each do |locale| %>
         <li>
-          <%= link_to change_locale_path(locale), 
+          <%= link_to url_for(locale: locale),
               class: "flex items-center gap-2 #{locale == I18n.locale ? 'active bg-primary text-primary-content' : 'hover:bg-base-200'}" do %>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
@@ -24,4 +24,4 @@
       <% end %>
     </ul>
   </div>
-</div> 
+</div>

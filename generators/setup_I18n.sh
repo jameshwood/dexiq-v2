@@ -18,10 +18,6 @@ cp generators/i18n_templates/devise.es.yml config/locales/devise.es.yml
 cp generators/i18n_templates/devise.fr.yml config/locales/devise.fr.yml
 cp generators/i18n_templates/devise.de.yml config/locales/devise.de.yml
 
-# 2. Copy LocaleController
-mkdir -p app/controllers
-cp generators/i18n_templates/locale_controller.rb app/controllers/locale_controller.rb
-
 # 3. Copy language switcher component
 mkdir -p app/views/components
 cp generators/i18n_templates/_language_switcher.html.erb app/views/components/_language_switcher.html.erb
@@ -36,9 +32,6 @@ cp config/routes.rb "$BACKUP_FILE"
 # Create new routes file
 cat > config/routes.rb.new << 'EOL'
 Rails.application.routes.draw do
-  # Locale change route (outside scope)
-  get '/locale/:locale', to: 'locale#change', as: :change_locale
-  
   # Motor Admin (outside locale scope - admin interface)
   authenticate :user, lambda { |u| u.admin? } do
     mount Motor::Admin => '/motor_admin'

@@ -9,8 +9,9 @@ This document explains the I18n setup and how to use it effectively.
 1. **Multi-language Support**: English, Spanish, French, German
 2. **Devise Integration**: Complete Devise translations for all languages
 3. **Fixed Position Language Switcher**: Always accessible in bottom-right corner
-4. **Session-based Locale Switching**: No authentication required
+4. **URL-based Locale Switching**: Clean URLs with locale prefixes
 5. **Comprehensive Translations**: Common UI elements, navigation, forms, errors
+6. **Safe Route Backup**: Automatic backup of existing routes
 
 ### 🎨 Language Switcher
 
@@ -62,9 +63,9 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-## 🌐 URL-based Locale Switching (Optional)
+## 🌐 URL-based Locale Switching
 
-For more advanced URL-based locale switching (e.g., `/en/pages`, `/es/pages`), you can wrap your routes in a scope:
+The setup automatically implements URL-based locale switching with clean URLs:
 
 ### Option 1: Manual Route Scoping
 
@@ -95,12 +96,19 @@ Rails.application.routes.draw do
 end
 ```
 
-### Option 2: Use the default_url_options (Current Setup)
+### URL Structure
 
-The current setup uses `default_url_options` which adds locale as a query parameter:
-- URLs: `yoursite.com/?locale=es`
-- Simpler implementation
-- Works with existing routes
+The setup automatically creates clean, locale-prefixed URLs:
+- **English**: `yoursite.com/en/` (default)
+- **Spanish**: `yoursite.com/es/`
+- **French**: `yoursite.com/fr/`
+- **German**: `yoursite.com/de/`
+- **Language switching**: `yoursite.com/locale/fr` (redirects to `/fr/`)
+
+### Automatic Redirects
+- `yoursite.com/` → `yoursite.com/en/`
+- `yoursite.com/pages` → `yoursite.com/en/pages`
+- `yoursite.com/locale/fr` → `yoursite.com/fr/`
 
 ## 📝 Using Translations
 

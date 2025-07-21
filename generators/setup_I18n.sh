@@ -26,7 +26,10 @@ cp generators/i18n_templates/_language_switcher.html.erb app/views/components/_l
 # 4. Add route if not present
 ROUTE="get '/locale/:locale', to: 'locale#change', as: :change_locale"
 if ! grep -qF "$ROUTE" config/routes.rb; then
-  echo "$ROUTE" >> config/routes.rb
+  # Add the route before the 'end' of the routes block
+  sed -i '' '/^end$/i\
+  '"$ROUTE"'
+' config/routes.rb
   echo "✅ Added locale route to config/routes.rb"
 fi
 

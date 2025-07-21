@@ -1,0 +1,84 @@
+de:
+  languages:
+    en: "Englisch"
+    es: "Spanisch"
+    fr: "Französisch"
+    de: "Deutsch"
+  
+  common:
+    save: "Speichern"
+    cancel: "Abbrechen"
+    edit: "Bearbeiten"
+    delete: "Löschen"
+    back: "Zurück"
+    next: "Weiter"
+    previous: "Zurück"
+    loading: "Lädt..."
+    error: "Fehler"
+    success: "Erfolg"
+    warning: "Warnung"
+    info: "Information"
+  
+  navigation:
+    home: "Startseite"
+    about: "Über uns"
+    contact: "Kontakt"
+    login: "Anmelden"
+    logout: "Abmelden"
+    register: "Registrieren"
+    profile: "Profil"
+    settings: "Einstellungen"
+    dashboard: "Dashboard"
+  
+  pages:
+    home:
+      title: "Willkommen"
+      subtitle: "Beginnen Sie mit Ihrer neuen Rails-Anwendung"
+      description: "Eine moderne Rails-Anwendung, die mit Lightning Rails erstellt wurde"
+    about:
+      title: "Über uns"
+      content: "Erfahren Sie mehr über unser Unternehmen"
+      description: "Entdecken Sie unsere Geschichte und Mission"
+    contact:
+      title: "Kontaktieren Sie uns"
+      content: "Kontaktieren Sie unser Team"
+      description: "Wir würden gerne von Ihnen hören"
+    privacy:
+      title: "Datenschutzrichtlinie"
+      content: "Wie wir Ihre Daten schützen"
+    terms:
+      title: "Nutzungsbedingungen"
+      content: "Unsere Bedingungen"
+    cookies:
+      title: "Cookie-Richtlinie"
+      content: "Wie wir Cookies verwenden"
+  
+  users:
+    premium: "Premium-Benutzer"
+    admin: "Administrator"
+    profile: "Profil"
+    settings: "Einstellungen"
+    account: "Konto"
+    billing: "Abrechnung"
+    security: "Sicherheit"
+  
+  forms:
+    email: "E-Mail"
+    password: "Passwort"
+    password_confirmation: "Passwort bestätigen"
+    remember_me: "Angemeldet bleiben"
+    forgot_password: "Passwort vergessen?"
+    sign_in: "Anmelden"
+    sign_up: "Registrieren"
+    sign_out: "Abmelden"
+    update: "Aktualisieren"
+    create: "Erstellen"
+    destroy: "Löschen"
+  
+  errors:
+    not_found: "Nicht gefunden"
+    unauthorized: "Nicht autorisiert"
+    forbidden: "Verboten"
+    internal_server_error: "Interner Serverfehler"
+    something_went_wrong: "Etwas ist schiefgelaufen"
+    try_again: "Bitte versuchen Sie es erneut" 

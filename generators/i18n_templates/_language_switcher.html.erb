@@ -1,0 +1,27 @@
+<div class="fixed bottom-4 right-4 z-50">
+  <div class="dropdown dropdown-top dropdown-end">
+    <label tabindex="0" class="btn btn-circle btn-primary shadow-lg hover:shadow-xl transition-shadow duration-200">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+      </svg>
+    </label>
+    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-2xl bg-base-100 rounded-box w-52 border border-base-300 mb-2">
+      <% I18n.available_locales.each do |locale| %>
+        <li>
+          <%= link_to url_for(locale: locale),
+              class: "flex items-center gap-2 #{locale == I18n.locale ? 'active bg-primary text-primary-content' : 'hover:bg-base-200'}" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+            </svg>
+            <%= t("languages.#{locale}", default: locale.upcase) %>
+            <% if locale == I18n.locale %>
+              <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

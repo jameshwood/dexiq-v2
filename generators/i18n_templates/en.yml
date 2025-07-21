@@ -1,0 +1,84 @@
+en:
+  languages:
+    en: "English"
+    es: "Spanish"
+    fr: "French"
+    de: "German"
+  
+  common:
+    save: "Save"
+    cancel: "Cancel"
+    edit: "Edit"
+    delete: "Delete"
+    back: "Back"
+    next: "Next"
+    previous: "Previous"
+    loading: "Loading..."
+    error: "Error"
+    success: "Success"
+    warning: "Warning"
+    info: "Information"
+  
+  navigation:
+    home: "Home"
+    about: "About"
+    contact: "Contact"
+    login: "Login"
+    logout: "Logout"
+    register: "Register"
+    profile: "Profile"
+    settings: "Settings"
+    dashboard: "Dashboard"
+  
+  pages:
+    home:
+      title: "Welcome"
+      subtitle: "Get started with your new Rails app"
+      description: "A modern Rails application built with Lightning Rails"
+    about:
+      title: "About Us"
+      content: "Learn more about our company"
+      description: "Discover our story and mission"
+    contact:
+      title: "Contact Us"
+      content: "Get in touch with our team"
+      description: "We'd love to hear from you"
+    privacy:
+      title: "Privacy Policy"
+      content: "How we protect your data"
+    terms:
+      title: "Terms of Service"
+      content: "Our terms and conditions"
+    cookies:
+      title: "Cookie Policy"
+      content: "How we use cookies"
+  
+  users:
+    premium: "Premium User"
+    admin: "Administrator"
+    profile: "Profile"
+    settings: "Settings"
+    account: "Account"
+    billing: "Billing"
+    security: "Security"
+  
+  forms:
+    email: "Email"
+    password: "Password"
+    password_confirmation: "Password Confirmation"
+    remember_me: "Remember me"
+    forgot_password: "Forgot your password?"
+    sign_in: "Sign in"
+    sign_up: "Sign up"
+    sign_out: "Sign out"
+    update: "Update"
+    create: "Create"
+    destroy: "Delete"
+  
+  errors:
+    not_found: "Not found"
+    unauthorized: "Unauthorized"
+    forbidden: "Forbidden"
+    internal_server_error: "Internal server error"
+    something_went_wrong: "Something went wrong"
+    try_again: "Please try again" 

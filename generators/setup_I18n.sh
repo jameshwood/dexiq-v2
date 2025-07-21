@@ -38,18 +38,23 @@ Rails.application.routes.draw do
   # Locale change route (outside scope)
   get '/locale/:locale', to: 'locale#change', as: :change_locale
   
-  # Scope all routes under locale
+  # Motor Admin (outside locale scope - admin interface)
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Motor::Admin => '/motor_admin'
+  end
+  
+  # Scope all routes under locale (except admin)
   scope "/:locale" do
 EOL
-	# Extract existing routes (excluding the locale change route and scope blocks)
-	grep -v "get '/locale/:locale'" config/routes.rb.backup.* | grep -v "scope" | grep -v "Rails.application.routes.draw" | grep -v "^end$" | sed 's/^/    /' >> config/routes.rb.new
+	# Extract existing routes (excluding the locale change route, scope blocks, and motor admin)
+	grep -v "get '/locale/:locale'" config/routes.rb.backup.* | grep -v "scope" | grep -v "Rails.application.routes.draw" | grep -v "^end$" | grep -v "mount Motor::Admin" | grep -v "authenticate.*admin" | sed 's/^/    /' >> config/routes.rb.new
 
 	# Add the closing parts
 	cat >> config/routes.rb.new << 'EOL'
 	end
 
 	# Default locale redirects
-	get '*path', to: redirect("/#{I18n.default_locale}/%{path}"), constraints: lambda { |req| !req.path.start_with?("/#{I18n.default_locale}/") && !req.path.start_with?("/locale/") }
+	get '*path', to: redirect("/#{I18n.default_locale}/%{path}"), constraints: lambda { |req| !req.path.start_with?("/#{I18n.default_locale}/") && !req.path.start_with?("/locale/") && !req.path.start_with?("/motor_admin") }
 	get '', to: redirect("/#{I18n.default_locale}")
 end
 EOL
@@ -68,6 +73,10 @@ EOL
   echo "📝 Original routes backed up to: config/routes.rb.backup.*"
   echo "🔄 To revert: cp config/routes.rb.backup.* config/routes.rb"
   echo ""
+  
+  # Now update default_url_options since routes are scoped
+  sed -i '' 's/{ host: ENV\["DOMAIN"\] || "localhost:3000" }/{ host: ENV\["DOMAIN"\] || "localhost:3000", locale: I18n.locale }/' "$APP_CONTROLLER"
+  echo "✅ Updated default_url_options for scoped routes"
 fi
 
 # 5. Add render to layout if not present (fixed position)
@@ -119,10 +128,9 @@ if ! grep -qF "before_action :set_locale" "$APP_CONTROLLER"; then
   end\
 ' "$APP_CONTROLLER"
 
-  # Update default_url_options to include locale
-  sed -i '' 's/{ host: ENV\["DOMAIN"\] || "localhost:3000" }/{ host: ENV\["DOMAIN"\] || "localhost:3000", locale: I18n.locale }/' "$APP_CONTROLLER"
-  
   echo "✅ Added locale logic to ApplicationController"
 fi
+
+
 
 echo "🎉 I18n setup complete! You can now use multiple languages in your app."

@@ -106,8 +106,8 @@ echo "✅ Updated default_url_options for scoped routes"
 LAYOUT="app/views/layouts/application.html.erb"
 RENDER_LINE='<%= render "components/language_switcher" %>'
 if ! grep -qF "$RENDER_LINE" "$LAYOUT"; then
-  # Add at the end of the body tag
-  sed -i '' '/<\/body>/i\
+  # Add the language switcher after the opening body tag
+  sed -i '' '/<body>/a\
     '"$RENDER_LINE"'
 ' "$LAYOUT"
   echo "✅ Added fixed position language switcher to layout"

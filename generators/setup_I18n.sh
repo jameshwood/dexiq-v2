@@ -4,6 +4,9 @@ set -e
 
 echo "🌐 Setting up I18n support..."
 
+# Define variables
+APP_CONTROLLER="app/controllers/application_controller.rb"
+
 # 1. Copy locale files
 mkdir -p config/locales
 cp generators/i18n_templates/en.yml config/locales/en.yml
@@ -105,12 +108,30 @@ echo "✅ Updated default_url_options for scoped routes"
 # 5. Add render to layout if not present (fixed position)
 LAYOUT="app/views/layouts/application.html.erb"
 RENDER_LINE='<%= render "components/language_switcher" %>'
-if ! grep -qF "$RENDER_LINE" "$LAYOUT"; then
-  # Add the language switcher after the opening body tag
-  sed -i '' '/<body>/a\
+
+echo "🔍 Checking layout file: $LAYOUT"
+if [[ -f "$LAYOUT" ]]; then
+  echo "✅ Layout file exists"
+  
+  if ! grep -qF "$RENDER_LINE" "$LAYOUT"; then
+    echo "➕ Adding language switcher to layout..."
+    # Add the language switcher after the opening body tag
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      # macOS sed
+      sed -i '' '/<body>/a\
     '"$RENDER_LINE"'
 ' "$LAYOUT"
-  echo "✅ Added fixed position language switcher to layout"
+    else
+      # Linux sed
+      sed -i '/<body>/a\'$'\n    '"$RENDER_LINE"'' "$LAYOUT"
+    fi
+    echo "✅ Added fixed position language switcher to layout"
+  else
+    echo "ℹ️  Language switcher already present in layout"
+  fi
+else
+  echo "❌ Layout file not found: $LAYOUT"
+  exit 1
 fi
 
 # 6. Add I18n config to config/application.rb if not present
@@ -127,7 +148,6 @@ if ! grep -qF "$I18N_CONFIG" "$APP_CONFIG"; then
 fi
 
 # 7. Add locale logic to ApplicationController if not present
-APP_CONTROLLER="app/controllers/application_controller.rb"
 if ! grep -qF "before_action :set_locale" "$APP_CONTROLLER"; then
   # Remove the existing set_locale method if it exists
   sed -i '' '/def set_locale/,/^  end$/d' "$APP_CONTROLLER"

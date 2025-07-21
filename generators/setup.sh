@@ -75,7 +75,7 @@ read -r add_i18n
 
 if [[ $add_i18n =~ ^[Yy]$ ]]; then
   echo "Adding I18n support..."
-  bash generators/setup_i18n.sh
+  bash generators/setup_I18n.sh
   echo "✅ I18n support added!"
   echo "📝 Note: Devise translations are included for English, Spanish, French, and German"
   echo "🌐 You can customize translations in config/locales/"

@@ -1,0 +1,60 @@
+de:
+  devise:
+    confirmations:
+      confirmed: "Ihre E-Mail-Adresse wurde erfolgreich bestätigt."
+      send_instructions: "Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zur Bestätigung Ihrer E-Mail-Adresse."
+      send_paranoid_instructions: "Wenn Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie in wenigen Minuten einen Link zur Passwort-Wiederherstellung an Ihre E-Mail-Adresse."
+    failure:
+      already_authenticated: "Sie sind bereits angemeldet."
+      inactive: "Ihr Konto ist noch nicht aktiviert."
+      invalid: "Ungültige %{authentication_keys} oder Passwort."
+      locked: "Ihr Konto ist gesperrt."
+      last_attempt: "Sie haben noch einen Versuch, bevor Ihr Konto gesperrt wird."
+      not_a_navigator_format: "Ungültiger Authentifizierungsschlüssel."
+      timeout: "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren."
+      unauthenticated: "Sie müssen sich anmelden oder registrieren, bevor Sie fortfahren."
+      unconfirmed: "Sie müssen Ihre E-Mail-Adresse bestätigen, bevor Sie fortfahren."
+    mailer:
+      confirmation_instructions:
+        subject: "Bestätigungsanweisungen"
+      email_changed:
+        subject: "E-Mail geändert"
+      password_change:
+        subject: "Passwort geändert"
+      reset_password_instructions:
+        subject: "Anweisungen zur Passwort-Wiederherstellung"
+      unlock_instructions:
+        subject: "Entsperrungsanweisungen"
+    omniauth_callbacks:
+      failure: "Authentifizierung von %{kind} nicht möglich, da \"%{reason}\"."
+      success: "Erfolgreich authentifiziert vom %{kind} Konto."
+    passwords:
+      no_token: "Sie können nicht auf diese Seite zugreifen, ohne von einer E-Mail zur Passwort-Wiederherstellung zu kommen. Wenn Sie von einer E-Mail zur Passwort-Wiederherstellung kommen, stellen Sie sicher, dass Sie die vollständige bereitgestellte URL verwenden."
+      send_instructions: "Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zur Passwort-Wiederherstellung."
+      send_paranoid_instructions: "Wenn Ihre E-Mail-Adresse in unserer Datenbank existiert, erhalten Sie in wenigen Minuten einen Link zur Passwort-Wiederherstellung an Ihre E-Mail-Adresse."
+      updated: "Ihr Passwort wurde erfolgreich geändert. Sie sind jetzt angemeldet."
+      updated_not_active: "Ihr Passwort wurde erfolgreich geändert."
+    registrations:
+      destroyed: "Auf Wiedersehen! Ihr Konto wurde erfolgreich gekündigt. Wir hoffen, Sie bald wiederzusehen."
+      signed_up: "Willkommen! Sie haben sich erfolgreich registriert."
+      signed_up_but_unconfirmed: "Eine Nachricht mit einem Bestätigungslink wurde an Ihre E-Mail-Adresse gesendet. Bitte folgen Sie dem Link, um Ihr Konto zu aktivieren."
+      update_needs_confirmation: "Sie haben Ihr Konto erfolgreich aktualisiert, aber wir müssen Ihre neue E-Mail-Adresse überprüfen. Bitte überprüfen Sie Ihre E-Mail und folgen Sie dem Bestätigungslink, um Ihre neue E-Mail-Adresse zu bestätigen."
+      updated: "Ihr Konto wurde erfolgreich aktualisiert."
+      updated_but_unconfirmed: "Sie haben Ihr Konto erfolgreich aktualisiert, aber wir müssen Ihre neue E-Mail-Adresse überprüfen. Bitte überprüfen Sie Ihre E-Mail und folgen Sie dem Bestätigungslink, um Ihre neue E-Mail-Adresse zu bestätigen."
+    sessions:
+      signed_in: "Erfolgreich angemeldet."
+      signed_out: "Erfolgreich abgemeldet."
+      already_signed_out: "Erfolgreich abgemeldet."
+    unlocks:
+      send_instructions: "Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zur Entsperrung Ihres Kontos."
+      send_paranoid_instructions: "Wenn Ihr Konto existiert, erhalten Sie in wenigen Minuten eine E-Mail mit Anweisungen zur Entsperrung."
+      unlocked: "Ihr Konto wurde erfolgreich entsperrt. Bitte melden Sie sich an, um fortzufahren."
+  errors:
+    messages:
+      already_confirmed: "wurde bereits bestätigt, bitte versuchen Sie sich anzumelden"
+      confirmation_period_expired: "muss innerhalb von %{period} bestätigt werden, bitte fordern Sie einen neuen an"
+      expired: "ist abgelaufen, bitte fordern Sie einen neuen an"
+      not_found: "nicht gefunden"
+      not_saved:
+        one: "1 Fehler verhinderte das Speichern dieses %{resource}:"
+        other: "%{count} Fehler verhinderten das Speichern dieses %{resource}:" 

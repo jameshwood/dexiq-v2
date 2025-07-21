@@ -1,0 +1,84 @@
+fr:
+  languages:
+    en: "Anglais"
+    es: "Espagnol"
+    fr: "Français"
+    de: "Allemand"
+  
+  common:
+    save: "Enregistrer"
+    cancel: "Annuler"
+    edit: "Modifier"
+    delete: "Supprimer"
+    back: "Retour"
+    next: "Suivant"
+    previous: "Précédent"
+    loading: "Chargement..."
+    error: "Erreur"
+    success: "Succès"
+    warning: "Avertissement"
+    info: "Information"
+  
+  navigation:
+    home: "Accueil"
+    about: "À propos"
+    contact: "Contact"
+    login: "Se connecter"
+    logout: "Se déconnecter"
+    register: "S'inscrire"
+    profile: "Profil"
+    settings: "Paramètres"
+    dashboard: "Tableau de bord"
+  
+  pages:
+    home:
+      title: "Bienvenue"
+      subtitle: "Commencez avec votre nouvelle application Rails"
+      description: "Une application Rails moderne construite avec Lightning Rails"
+    about:
+      title: "À propos de nous"
+      content: "En savoir plus sur notre entreprise"
+      description: "Découvrez notre histoire et notre mission"
+    contact:
+      title: "Contactez-nous"
+      content: "Contactez notre équipe"
+      description: "Nous aimerions avoir de vos nouvelles"
+    privacy:
+      title: "Politique de confidentialité"
+      content: "Comment nous protégeons vos données"
+    terms:
+      title: "Conditions de service"
+      content: "Nos termes et conditions"
+    cookies:
+      title: "Politique des cookies"
+      content: "Comment nous utilisons les cookies"
+  
+  users:
+    premium: "Utilisateur Premium"
+    admin: "Administrateur"
+    profile: "Profil"
+    settings: "Paramètres"
+    account: "Compte"
+    billing: "Facturation"
+    security: "Sécurité"
+  
+  forms:
+    email: "E-mail"
+    password: "Mot de passe"
+    password_confirmation: "Confirmer le mot de passe"
+    remember_me: "Se souvenir de moi"
+    forgot_password: "Mot de passe oublié ?"
+    sign_in: "Se connecter"
+    sign_up: "S'inscrire"
+    sign_out: "Se déconnecter"
+    update: "Mettre à jour"
+    create: "Créer"
+    destroy: "Supprimer"
+  
+  errors:
+    not_found: "Non trouvé"
+    unauthorized: "Non autorisé"
+    forbidden: "Interdit"
+    internal_server_error: "Erreur interne du serveur"
+    something_went_wrong: "Quelque chose s'est mal passé"
+    try_again: "Veuillez réessayer" 

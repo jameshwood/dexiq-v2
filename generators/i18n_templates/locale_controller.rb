@@ -5,12 +5,8 @@ class LocaleController < ApplicationController
     locale = params[:locale].to_s.strip.to_sym
     if I18n.available_locales.include?(locale)
       session[:locale] = locale
-      # Handle both scoped and non-scoped routes
-      begin
-        redirect_back(fallback_location: root_path(locale: locale))
-      rescue ActionController::UrlGenerationError
-        redirect_back(fallback_location: root_path)
-      end
+      # Redirect to the same page but with the new locale
+      redirect_to url_for(locale: locale)
     else
       redirect_back(fallback_location: root_path)
     end

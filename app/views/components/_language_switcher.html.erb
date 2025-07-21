@@ -1,0 +1,15 @@
+<div class="dropdown dropdown-end">
+  <label tabindex="0" class="btn btn-ghost btn-sm">
+    <%= lucide_icon("languages") %>
+    <%= I18n.locale.upcase %>
+  </label>
+  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-40">
+    <% I18n.available_locales.each do |locale| %>
+      <li>
+        <%= link_to t("languages.#{locale}", default: locale.upcase), 
+            change_locale_path(locale),
+            class: locale == I18n.locale ? "active" : "" %>
+      </li>
+    <% end %>
+  </ul>
+</div>

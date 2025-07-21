@@ -70,3 +70,14 @@ git commit -m "Initial commit: Set up company information in meta.yml"
 git push -u origin master
 
 echo "Setup complete! Your LightningRails project is ready to go 🚀. Happy Building!"
+
+echo "Would you like to add internationalization (I18n) support? (y/n)"
+read -r add_i18n
+
+if [[ $add_i18n =~ ^[Yy]$ ]]; then
+  echo "Adding I18n support..."
+  rails generate lightning:i18n
+  echo "✅ I18n support added!"
+  echo "📝 Note: Devise translations are included for English, Spanish, French, and German"
+  echo "🌐 You can customize translations in config/locales/"
+fi

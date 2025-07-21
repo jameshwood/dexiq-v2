@@ -102,4 +102,56 @@ echo ""
 sed -i '' 's/{ host: ENV\["DOMAIN"\] || "localhost:3000" }/{ host: ENV\["DOMAIN"\] || "localhost:3000", locale: I18n.locale }/' "$APP_CONTROLLER"
 echo "✅ Updated default_url_options for scoped routes"
 
+# 5. Add render to layout if not present (fixed position)
+LAYOUT="app/views/layouts/application.html.erb"
+RENDER_LINE='<%= render "components/language_switcher" %>'
+if ! grep -qF "$RENDER_LINE" "$LAYOUT"; then
+  # Add at the end of the body tag
+  sed -i '' '/<\/body>/i\
+    '"$RENDER_LINE"'
+' "$LAYOUT"
+  echo "✅ Added fixed position language switcher to layout"
+fi
+
+# 6. Add I18n config to config/application.rb if not present
+APP_CONFIG="config/application.rb"
+I18N_CONFIG="config.i18n.available_locales = [:en, :es, :fr, :de]"
+if ! grep -qF "$I18N_CONFIG" "$APP_CONFIG"; then
+  sed -i '' '/class Application < Rails::Application/a\
+    # Configure available locales\
+    config.i18n.available_locales = [:en, :es, :fr, :de]\
+    config.i18n.default_locale = :en\
+    config.i18n.fallbacks = true\
+' "$APP_CONFIG"
+  echo "✅ Added I18n config to config/application.rb"
+fi
+
+# 7. Add locale logic to ApplicationController if not present
+APP_CONTROLLER="app/controllers/application_controller.rb"
+if ! grep -qF "before_action :set_locale" "$APP_CONTROLLER"; then
+  # Remove the existing set_locale method if it exists
+  sed -i '' '/def set_locale/,/^  end$/d' "$APP_CONTROLLER"
+  
+  # Add the proper locale logic
+  sed -i '' '/before_action :authenticate_user!/a\
+  before_action :set_locale\
+' "$APP_CONTROLLER"
+
+  # Add the locale methods before the default_url_options method
+  sed -i '' '/def default_url_options/a\
+  private\
+\
+  def set_locale\
+    I18n.locale = extract_locale || I18n.default_locale\
+  end\
+\
+  def extract_locale\
+    parsed_locale = params[:locale] || session[:locale] || request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first\
+    parsed_locale if I18n.available_locales.map(&:to_s).include?(parsed_locale)\
+  end\
+' "$APP_CONTROLLER"
+
+  echo "✅ Added locale logic to ApplicationController"
+fi
+
 echo "🎉 I18n setup complete! You can now use multiple languages in your app."

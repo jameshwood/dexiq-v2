@@ -16,15 +16,28 @@ module Integrations
     end
 
     # Fetch pair data by chain and pair address
+    # Battle-tested from v1 - proven endpoint structure
     # @param chain_id [String] e.g., 'ethereum', 'bsc', 'polygon'
     # @param pair_address [String]
-    # @return [Hash, nil]
+    # @return [Hash, nil] Structured data ready for DexscreenerSnapshot
     def fetch_pair(chain_id:, pair_address:)
-      path = "/pairs/#{chain_id}/#{pair_address}"
+      # Normalize chain ID (DexScreener uses lowercase)
+      normalized_chain = normalize_chain_id(chain_id)
+
+      path = "/pairs/#{normalized_chain}/#{pair_address}"
       response = connection.get(path)
 
       if response.success?
-        response.body
+        data = response.body
+        # DexScreener returns { pairs: [...] }
+        # Return the first pair if available
+        pairs = data.is_a?(Hash) ? data['pairs'] : []
+        raw_pair = pairs&.first
+
+        return nil unless raw_pair
+
+        # Parse into structured format for database
+        parse_pair_data(raw_pair)
       else
         Rails.logger.error("DexScreener API error: #{response.status} - #{response.body}")
         nil
@@ -57,7 +70,9 @@ module Integrations
     # @param token_address [String]
     # @return [Hash, nil]
     def fetch_token_profile(chain_id:, token_address:)
-      path = "/tokens/#{chain_id}/#{token_address}/profile"
+      normalized_chain = normalize_chain_id(chain_id)
+
+      path = "/tokens/#{normalized_chain}/#{token_address}/profile"
       response = connection.get(path)
 
       if response.success?
@@ -69,6 +84,72 @@ module Integrations
     rescue Faraday::Error => e
       Rails.logger.error("DexScreener profile connection error: #{e.class} - #{e.message}")
       nil
+    end
+
+    private
+
+    # Parse raw DexScreener API response into structured format
+    def parse_pair_data(pair)
+      {
+        chain_id: pair['chainId'],
+        dex_id: pair['dexId'],
+        url: pair['url'],
+        price_usd: pair['priceUsd'],
+        price_native: pair['priceNative'],
+        txns_5m: pair.dig('txns', 'm5'),
+        txns_1h: pair.dig('txns', 'h1'),
+        txns_6h: pair.dig('txns', 'h6'),
+        txns_24h: pair.dig('txns', 'h24'),
+        volume_5m: pair.dig('volume', 'm5'),
+        volume_1h: pair.dig('volume', 'h1'),
+        volume_6h: pair.dig('volume', 'h6'),
+        volume_24h: pair.dig('volume', 'h24'),
+        price_change_5m: pair.dig('priceChange', 'm5'),
+        price_change_1h: pair.dig('priceChange', 'h1'),
+        price_change_6h: pair.dig('priceChange', 'h6'),
+        price_change_24h: pair.dig('priceChange', 'h24'),
+        liquidity_usd: pair.dig('liquidity', 'usd'),
+        liquidity_base: pair.dig('liquidity', 'base'),
+        liquidity_quote: pair.dig('liquidity', 'quote'),
+        fdv: pair['fdv'],
+        market_cap: pair['marketCap'],
+        pair_created_at: parse_timestamp(pair['pairCreatedAt'])
+      }
+    end
+
+    # Parse timestamp (milliseconds or seconds)
+    def parse_timestamp(timestamp)
+      return nil unless timestamp
+
+      # DexScreener returns milliseconds
+      Time.at(timestamp / 1000.0)
+    rescue StandardError => e
+      Rails.logger.error("Failed to parse timestamp #{timestamp}: #{e.message}")
+      nil
+    end
+
+    # Normalize chain IDs to DexScreener format
+    # Battle-tested mappings from v1
+    def normalize_chain_id(chain_id)
+      mappings = {
+        'eth' => 'ethereum',
+        'bsc' => 'bsc',
+        'bnb' => 'bsc',
+        'polygon' => 'polygon',
+        'matic' => 'polygon',
+        'arbitrum' => 'arbitrum',
+        'optimism' => 'optimism',
+        'avalanche' => 'avalanche',
+        'avax' => 'avalanche',
+        'fantom' => 'fantom',
+        'ftm' => 'fantom',
+        'solana' => 'solana',
+        'sol' => 'solana',
+        'base' => 'base'
+      }
+
+      normalized = mappings[chain_id.to_s.downcase] || chain_id.to_s.downcase
+      normalized
     end
   end
 end

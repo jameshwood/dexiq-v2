@@ -19,8 +19,8 @@ module Api
           token_url: token_params[:token_url]
         )
 
-        # Enqueue background job to fetch data
-        FetchTokenDataJob.perform_later(@token.id)
+        # Enqueue background job to fetch data (orchestrates all data fetching)
+        Tokens::FetchDataJob.perform_later(@token.id)
 
         render_success(
           token_id: @token.id,
@@ -40,8 +40,8 @@ module Api
       # GET /api/v1/tokens/:id/status
       # Get data readiness status
       def status
-        readiness_service = Readiness::TokenDataReadinessService.new(@token)
-        render_success(readiness_service.data_summary)
+        readiness_service = Tokens::DataReadinessService.new(@token)
+        render_success(readiness_service.status)
       end
 
       # POST /api/v1/tokens/:id/analyse_pair

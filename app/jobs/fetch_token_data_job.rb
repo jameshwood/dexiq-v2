@@ -61,11 +61,8 @@ class FetchTokenDataJob < ApplicationJob
   def fetch_gecko_terminal_data(token)
     client = Integrations::GeckoTerminalClient.new
 
-    # Map chain_id to GeckoTerminal network identifier
-    # TODO: Create a proper mapping service
-    network = map_chain_to_gecko_network(token.chain_id)
-
-    data = client.fetch_pool(network: network, pool_address: token.pool_address)
+    # Client handles network normalization with battle-tested mappings from v1
+    data = client.fetch_pool(network: token.chain_id, pool_address: token.pool_address)
 
     if data.present?
       token.gecko_terminal_snapshots.create!(data: data, fetched_at: Time.current)
@@ -79,14 +76,13 @@ class FetchTokenDataJob < ApplicationJob
 
   def fetch_ohlcv_data(token)
     client = Integrations::GeckoTerminalClient.new
-    network = map_chain_to_gecko_network(token.chain_id)
 
-    # Fetch multiple timeframes
+    # Fetch multiple timeframes (battle-tested approach from v1)
     timeframes = ['1h', '1d']
 
     timeframes.each do |timeframe|
       data = client.fetch_ohlcv(
-        network: network,
+        network: token.chain_id,
         pool_address: token.pool_address,
         timeframe: timeframe,
         limit: 100
@@ -103,24 +99,5 @@ class FetchTokenDataJob < ApplicationJob
     end
   rescue => e
     Rails.logger.error("FetchTokenDataJob: OHLCV fetch failed - #{e.message}")
-  end
-
-  def map_chain_to_gecko_network(chain_id)
-    # TODO: Create comprehensive mapping
-    # This is a basic mapping - expand as needed
-    mapping = {
-      'ethereum' => 'eth',
-      'eth' => 'eth',
-      'bsc' => 'bsc',
-      'binance-smart-chain' => 'bsc',
-      'polygon' => 'polygon-pos',
-      'arbitrum' => 'arbitrum',
-      'optimism' => 'optimism',
-      'avalanche' => 'avax',
-      'base' => 'base',
-      'solana' => 'solana'
-    }
-
-    mapping[chain_id.downcase] || chain_id.downcase
   end
 end

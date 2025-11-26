@@ -25,17 +25,18 @@ class Token < ApplicationRecord
 
   # Get the most recent snapshot of each type
   def latest_dexscreener_snapshot
-    dexscreener_snapshots.order(fetched_at: :desc).first
+    dexscreener_snapshots.order(created_at: :desc).first
   end
 
-  def latest_gecko_terminal_snapshot
-    gecko_terminal_snapshots.order(fetched_at: :desc).first
+  def latest_gecko_terminal_snapshot(role = 'base')
+    gecko_terminal_snapshots.where(role: role).order(created_at: :desc).first
   end
 
-  def latest_gecko_ohlcv_snapshot(timeframe = nil)
-    scope = gecko_ohlcv_snapshots.order(fetched_at: :desc)
-    scope = scope.where(timeframe: timeframe) if timeframe
-    scope.first
+  def latest_gecko_ohlcv_snapshot(timeframe = 'minute', aggregate = 1)
+    gecko_ohlcv_snapshots
+      .where(timeframe: timeframe, aggregate: aggregate)
+      .order(timestamp: :desc)
+      .first
   end
 
   # Calculate data readiness tier: "none", "some", "lots"

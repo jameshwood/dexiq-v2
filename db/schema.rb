@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_26_121106) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_134637) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,33 +30,78 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_121106) do
 
   create_table "dexscreener_snapshots", force: :cascade do |t|
     t.bigint "token_id", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "fetched_at"
+    t.string "chain_id"
+    t.string "dex_id"
+    t.string "url"
+    t.decimal "price_usd", precision: 30, scale: 18
+    t.decimal "price_native", precision: 30, scale: 18
+    t.jsonb "txns_5m"
+    t.jsonb "txns_1h"
+    t.jsonb "txns_6h"
+    t.jsonb "txns_24h"
+    t.decimal "volume_5m", precision: 20, scale: 2
+    t.decimal "volume_1h", precision: 20, scale: 2
+    t.decimal "volume_6h", precision: 20, scale: 2
+    t.decimal "volume_24h", precision: 20, scale: 2
+    t.decimal "price_change_5m", precision: 10, scale: 4
+    t.decimal "price_change_1h", precision: 10, scale: 4
+    t.decimal "price_change_6h", precision: 10, scale: 4
+    t.decimal "price_change_24h", precision: 10, scale: 4
+    t.decimal "liquidity_usd", precision: 20, scale: 2
+    t.decimal "liquidity_base", precision: 30, scale: 18
+    t.decimal "liquidity_quote", precision: 30, scale: 18
+    t.bigint "fdv"
+    t.bigint "market_cap"
+    t.datetime "pair_created_at"
+    t.datetime "captured_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["fetched_at"], name: "index_dexscreener_snapshots_on_fetched_at"
+    t.index ["token_id", "created_at"], name: "index_dexscreener_snapshots_on_token_id_and_created_at"
     t.index ["token_id"], name: "index_dexscreener_snapshots_on_token_id"
   end
 
   create_table "gecko_ohlcv_snapshots", force: :cascade do |t|
     t.bigint "token_id", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "fetched_at"
     t.string "timeframe"
+    t.integer "aggregate"
+    t.bigint "timestamp"
+    t.decimal "open", precision: 30, scale: 18
+    t.decimal "high", precision: 30, scale: 18
+    t.decimal "low", precision: 30, scale: 18
+    t.decimal "close", precision: 30, scale: 18
+    t.decimal "volume", precision: 20, scale: 8
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["fetched_at"], name: "index_gecko_ohlcv_snapshots_on_fetched_at"
-    t.index ["token_id", "timeframe"], name: "index_gecko_ohlcv_snapshots_on_token_id_and_timeframe"
+    t.index ["token_id", "timeframe", "aggregate", "timestamp"], name: "index_ohlcv_on_token_timeframe_timestamp", unique: true
     t.index ["token_id"], name: "index_gecko_ohlcv_snapshots_on_token_id"
   end
 
   create_table "gecko_terminal_snapshots", force: :cascade do |t|
     t.bigint "token_id", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "fetched_at"
+    t.string "address"
+    t.string "name"
+    t.string "symbol"
+    t.integer "decimals"
+    t.string "role"
+    t.string "coingecko_coin_id"
+    t.string "image_large"
+    t.string "image_small"
+    t.string "image_thumb"
+    t.text "description"
+    t.string "twitter_handle"
+    t.string "discord_url"
+    t.string "telegram_handle"
+    t.decimal "gt_score", precision: 10, scale: 2
+    t.integer "holders_count"
+    t.string "holders_top_10"
+    t.string "holders_11_20"
+    t.string "holders_21_40"
+    t.string "holders_rest"
+    t.string "mint_authority"
+    t.string "freeze_authority"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["fetched_at"], name: "index_gecko_terminal_snapshots_on_fetched_at"
+    t.index ["token_id", "role", "created_at"], name: "idx_on_token_id_role_created_at_e3fb22b027"
     t.index ["token_id"], name: "index_gecko_terminal_snapshots_on_token_id"
   end
 

@@ -1,37 +1,47 @@
 // Content script for DexIQ
 // Scrapes token/pair data from GeckoTerminal and DexScreener pages
 
+import { getActiveSite, isOnPairPage, getPoolAddress, getChainId } from './utils/pageDetectors';
+import {
+  waitForSymbols,
+  extractPrice,
+  extractVolume,
+  extractLiquidity,
+  extractPriceChanges
+} from './scrapers/geckoterminal';
+import { waitForTokenList } from './scrapers/geckoTerminalList';
+import type { PairPayload, TokenPreview } from '../types/token';
+
 console.log('DexIQ content script loaded');
 
 // Detect which site we're on
-const currentSite = detectSite();
+const currentSite = getActiveSite();
 
 // Message handler from side panel
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   switch (message.type) {
     case 'GET_PAGE_DATA':
-      const pageData = extractPageData();
-      sendResponse(pageData);
-      break;
+      handleGetPageData(sendResponse);
+      return true; // Keep channel open for async response
 
     default:
       sendResponse({ error: 'Unknown message type' });
   }
 });
 
-function detectSite(): 'geckoterminal' | 'dexscreener' | 'unknown' {
-  const hostname = window.location.hostname;
-
-  if (hostname.includes('geckoterminal.com')) return 'geckoterminal';
-  if (hostname.includes('dexscreener.com')) return 'dexscreener';
-
-  return 'unknown';
+async function handleGetPageData(sendResponse: (response: any) => void) {
+  try {
+    const pageData = await extractPageData();
+    sendResponse(pageData);
+  } catch (error) {
+    sendResponse({ error: error instanceof Error ? error.message : 'Unknown error' });
+  }
 }
 
-function extractPageData() {
+async function extractPageData() {
   switch (currentSite) {
     case 'geckoterminal':
-      return extractGeckoTerminalData();
+      return await extractGeckoTerminalData();
     case 'dexscreener':
       return extractDexScreenerData();
     default:
@@ -39,66 +49,60 @@ function extractPageData() {
   }
 }
 
-function extractGeckoTerminalData() {
+async function extractGeckoTerminalData() {
   const url = window.location.href;
-  const pathname = window.location.pathname;
 
-  // Detect page type: list vs single pair
-  const isSinglePair = pathname.includes('/pools/');
-  const isListPage = pathname.includes('/') && !isSinglePair;
-
-  if (isSinglePair) {
-    return extractGeckoTerminalPairData(url, pathname);
-  } else if (isListPage) {
-    return extractGeckoTerminalListData();
+  // Use battle-tested page detection from v1
+  if (isOnPairPage()) {
+    return await extractGeckoTerminalPairData(url);
+  } else {
+    return await extractGeckoTerminalListData();
   }
-
-  return { pageType: 'unknown' };
 }
 
-function extractGeckoTerminalPairData(url: string, pathname: string) {
-  // TODO: Implement proper selectors for GeckoTerminal
-  // Example URL: https://www.geckoterminal.com/eth/pools/0xabc123...
+async function extractGeckoTerminalPairData(url: string): Promise<PairPayload> {
+  // Wait for symbols to load (handles SPA rendering)
+  const symbolPair = await waitForSymbols();
 
-  const pathParts = pathname.split('/');
-  const chainId = pathParts[pathParts.length - 2];
-  const poolAddress = pathParts[pathParts.length - 1];
+  if (!symbolPair) {
+    throw new Error('Could not extract symbol pair from page');
+  }
 
-  // Extract metadata from page
-  // This is a simplified example - actual selectors need to be tested
-  const symbolElement = document.querySelector('[data-selector="pair-symbol"]');
-  const symbol = symbolElement?.textContent?.split('/')[0] || '';
-  const quoteSymbol = symbolElement?.textContent?.split('/')[1] || '';
+  // Extract additional data using battle-tested selectors
+  const price = extractPrice();
+  const volume = extractVolume();
+  const liquidity = extractLiquidity();
+  const changes = extractPriceChanges();
+
+  // Get pool address and chain ID from URL
+  const poolAddress = getPoolAddress();
+  const chainId = getChainId();
+
+  if (!poolAddress) {
+    throw new Error('Could not extract pool address from URL');
+  }
 
   return {
-    pageType: 'pair',
     site: 'geckoterminal',
     chainId,
     poolAddress,
-    symbol,
-    quoteSymbol,
-    tokenUrl: url
-  };
+    symbol: symbolPair.symbol,
+    quoteSymbol: symbolPair.quoteSymbol,
+    tokenUrl: url,
+    // Include extracted data for immediate use
+    price: price || 'N/A',
+    volume: volume || 'N/A',
+    liquidity: liquidity || 'N/A',
+    change5m: changes.change5m || 'N/A',
+    change1h: changes.change1h || 'N/A',
+    change6h: changes.change6h || 'N/A',
+    change24h: changes.change24h || 'N/A'
+  } as PairPayload;
 }
 
-function extractGeckoTerminalListData() {
-  // TODO: Implement list extraction
-  // Find all token rows and extract key data
-  const tokens: any[] = [];
-
-  // Example: find token cards/rows
-  const tokenElements = document.querySelectorAll('[data-selector="token-row"]');
-
-  tokenElements.forEach((element) => {
-    // Extract token data - selectors need to be validated
-    tokens.push({
-      tokenName: element.querySelector('.token-name')?.textContent || '',
-      price: parseFloat(element.querySelector('.price')?.textContent || '0'),
-      volume: parseFloat(element.querySelector('.volume')?.textContent || '0'),
-      change24h: parseFloat(element.querySelector('.change-24h')?.textContent || '0'),
-      liquidity: parseFloat(element.querySelector('.liquidity')?.textContent || '0')
-    });
-  });
+async function extractGeckoTerminalListData(): Promise<{ pageType: string; site: string; tokens: TokenPreview[] }> {
+  // Wait for token list to load (handles SPA rendering)
+  const tokens = await waitForTokenList();
 
   return {
     pageType: 'list',
@@ -108,7 +112,7 @@ function extractGeckoTerminalListData() {
 }
 
 function extractDexScreenerData() {
-  // TODO: Implement DexScreener extraction
+  // TODO: Implement DexScreener extraction with v1 patterns
   // Will need to parse window.location.href and window.location.pathname
 
   return {

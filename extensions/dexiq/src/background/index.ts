@@ -70,7 +70,7 @@ async function handleSaveAuthToken(payload: { token: string; expiresIn?: number 
 }
 
 // Listen for tab updates to detect navigation to supported sites
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     const url = new URL(tab.url);
 

@@ -7,7 +7,7 @@ console.log('DexIQ content script loaded');
 const currentSite = detectSite();
 
 // Message handler from side panel
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   switch (message.type) {
     case 'GET_PAGE_DATA':
       const pageData = extractPageData();
@@ -109,8 +109,7 @@ function extractGeckoTerminalListData() {
 
 function extractDexScreenerData() {
   // TODO: Implement DexScreener extraction
-  const url = window.location.href;
-  const pathname = window.location.pathname;
+  // Will need to parse window.location.href and window.location.pathname
 
   return {
     pageType: 'pair',

@@ -36,9 +36,9 @@ class ApiClient {
   ): Promise<T> {
     const { retries = 2, ...fetchOptions } = options;
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...fetchOptions.headers,
+      ...(fetchOptions.headers as Record<string, string>),
     };
 
     // Add auth headers if available

@@ -10,9 +10,55 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_09_034443) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_121106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "ai_chat_interactions", force: :cascade do |t|
+    t.bigint "token_id", null: false
+    t.bigint "user_id", null: false
+    t.string "session_id"
+    t.text "prompt", null: false
+    t.text "reply"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id", "created_at"], name: "index_ai_chat_interactions_on_session_id_and_created_at"
+    t.index ["session_id"], name: "index_ai_chat_interactions_on_session_id"
+    t.index ["token_id"], name: "index_ai_chat_interactions_on_token_id"
+    t.index ["user_id"], name: "index_ai_chat_interactions_on_user_id"
+  end
+
+  create_table "dexscreener_snapshots", force: :cascade do |t|
+    t.bigint "token_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fetched_at"], name: "index_dexscreener_snapshots_on_fetched_at"
+    t.index ["token_id"], name: "index_dexscreener_snapshots_on_token_id"
+  end
+
+  create_table "gecko_ohlcv_snapshots", force: :cascade do |t|
+    t.bigint "token_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "fetched_at"
+    t.string "timeframe"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fetched_at"], name: "index_gecko_ohlcv_snapshots_on_fetched_at"
+    t.index ["token_id", "timeframe"], name: "index_gecko_ohlcv_snapshots_on_token_id_and_timeframe"
+    t.index ["token_id"], name: "index_gecko_ohlcv_snapshots_on_token_id"
+  end
+
+  create_table "gecko_terminal_snapshots", force: :cascade do |t|
+    t.bigint "token_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fetched_at"], name: "index_gecko_terminal_snapshots_on_fetched_at"
+    t.index ["token_id"], name: "index_gecko_terminal_snapshots_on_token_id"
+  end
 
   create_table "motor_alert_locks", force: :cascade do |t|
     t.bigint "alert_id", null: false
@@ -298,6 +344,34 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_09_034443) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "purchase_logs", force: :cascade do |t|
+    t.bigint "token_id", null: false
+    t.bigint "user_id", null: false
+    t.string "transaction_type", null: false
+    t.decimal "amount", precision: 20, scale: 8, null: false
+    t.decimal "price_per_token", precision: 20, scale: 8, null: false
+    t.string "transaction_hash"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_id", "user_id"], name: "index_purchase_logs_on_token_id_and_user_id"
+    t.index ["token_id"], name: "index_purchase_logs_on_token_id"
+    t.index ["user_id"], name: "index_purchase_logs_on_user_id"
+  end
+
+  create_table "tokens", force: :cascade do |t|
+    t.string "chain_id", null: false
+    t.string "pool_address", null: false
+    t.string "symbol"
+    t.string "quote_symbol"
+    t.string "token_url"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chain_id", "pool_address"], name: "index_tokens_on_chain_id_and_pool_address", unique: true
+    t.index ["user_id"], name: "index_tokens_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -311,6 +385,11 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_09_034443) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "ai_chat_interactions", "tokens"
+  add_foreign_key "ai_chat_interactions", "users"
+  add_foreign_key "dexscreener_snapshots", "tokens"
+  add_foreign_key "gecko_ohlcv_snapshots", "tokens"
+  add_foreign_key "gecko_terminal_snapshots", "tokens"
   add_foreign_key "motor_alert_locks", "motor_alerts", column: "alert_id"
   add_foreign_key "motor_alerts", "motor_queries", column: "query_id"
   add_foreign_key "motor_note_tag_tags", "motor_note_tags", column: "tag_id"
@@ -320,4 +399,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_09_034443) do
   add_foreign_key "pay_charges", "pay_subscriptions", column: "subscription_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
   add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
+  add_foreign_key "purchase_logs", "tokens"
+  add_foreign_key "purchase_logs", "users"
+  add_foreign_key "tokens", "users"
 end

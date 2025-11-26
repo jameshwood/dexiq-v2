@@ -45,6 +45,12 @@ gem "bootsnap", require: false
 # Use devise for authentication
 gem "devise"
 
+# API authentication
+gem "devise_token_auth"
+
+# CORS support for API
+gem "rack-cors"
+
 # .env file support
 gem "dotenv-rails"
 
@@ -74,6 +80,19 @@ gem "receipts", "~> 2.0"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+
+# HTTP client for external APIs
+gem "faraday"
+gem "faraday-retry"
+
+# Structured logging
+gem "lograge"
+
+# OpenAI integration
+gem "ruby-openai"
+
+# Background jobs
+gem "sidekiq"
 
 #database
 gem "pg"

@@ -5,6 +5,11 @@ class User < ApplicationRecord
   :recoverable, :rememberable, :validatable
   pay_customer stripe_attributes: :stripe_attributes
 
+  # DexIQ associations
+  has_many :tokens, dependent: :destroy
+  has_many :purchase_logs, dependent: :destroy
+  has_many :ai_chat_interactions, dependent: :destroy
+
 
   def stripe_attributes(pay_customer)
     {

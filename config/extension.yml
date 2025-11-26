@@ -1,0 +1,45 @@
+# DexIQ Chrome Extension Configuration
+# This file contains metadata and configuration for the extension
+# Values are injected into manifest.json during build
+
+development:
+  name: "DexIQ v2 (Development)"
+  description: "AI-powered token analysis for DEX traders - Development Build"
+  version: "2.0.0-dev"
+  api_base_url: "http://localhost:3000"
+  ws_url: "ws://localhost:3000/cable"
+  host_permissions:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"
+    - "http://localhost:3000/*"
+  content_scripts_matches:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"
+
+test:
+  name: "DexIQ v2 (Test)"
+  description: "AI-powered token analysis for DEX traders - Test Build"
+  version: "2.0.0-test"
+  api_base_url: "http://localhost:3000"
+  ws_url: "ws://localhost:3000/cable"
+  host_permissions:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"
+    - "http://localhost:3000/*"
+  content_scripts_matches:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"
+
+production:
+  name: "DexIQ v2"
+  description: "AI-powered token analysis for GeckoTerminal and DexScreener. Get instant insights, deep analysis, and position tracking."
+  version: "2.0.0"
+  # TODO: Replace with actual production URLs
+  api_base_url: "https://api.dexiq.app"
+  ws_url: "wss://api.dexiq.app/cable"
+  host_permissions:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"
+  content_scripts_matches:
+    - "https://*.geckoterminal.com/*"
+    - "https://*.dexscreener.com/*"

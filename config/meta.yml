@@ -1,10 +1,12 @@
-meta_product_name: "LightningRails"
-meta_title: "LightningRails - The fastest way to kickstart your Rails app"
-meta_description: "LightningRails is a Rails template that helps you kickstart your Rails app in minutes. It comes with a set of pre-configured tools and best practices to help you build your app faster."
-meta_image: "cover.png" # should exist in `app/assets/images/`
-twitter_account: "@your_twitter_account" # required for Twitter Cards
-setup_date: "2025-01-23"
-
+meta_product_name: ""
+meta_title: ""
+meta_description: " is the best product in the market"
+meta_image: "cover.png"
+twitter_account: "@product_twitter_account"
+company_name: ""
+company_website: ""
+company_twitter: ""
+setup_date: "Wed Nov 26 11:51:09 GMT 2025"
 
 # Theme
 LIGHT_THEME: "light"

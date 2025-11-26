@@ -37,3 +37,9 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 .env*
+
+# DexIQ Chrome Extension
+/extensions/dexiq/node_modules/
+/extensions/dexiq/dist/
+/extensions/dexiq/public/manifest.json
+/extensions/dexiq/*.zip
